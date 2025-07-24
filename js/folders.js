@@ -33,8 +33,12 @@ function displayFolders() {
   
   // Очищаем, кроме корневой папки
   const rootItem = folderTree.querySelector('[data-id="root"]');
+  const isActive = rootItem.classList.contains('active');
   folderTree.innerHTML = '';
   folderTree.appendChild(rootItem);
+  if (isActive) {
+    rootItem.classList.add('active');
+  }
 
   folders.forEach(folder => {
     // Убираем префикс "fabula_" из отображаемого имени
@@ -42,9 +46,23 @@ function displayFolders() {
     
     const folderItem = document.createElement('div');
     folderItem.className = 'folder-item';
-    folderItem.innerHTML = `📁 ${displayName}`;
     folderItem.setAttribute('data-id', folder.id);
     folderItem.onclick = () => selectFolder(folder.id, folderItem);
+    
+    folderItem.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          📁 ${displayName}
+        </div>
+        ${folder.id !== 'root' ? `
+          <button onclick="event.stopPropagation(); deleteFolder('${folder.id}', '${displayName}')" 
+                  style="background-color: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 12px; cursor: pointer;">
+            🗑️
+          </button>
+        ` : ''}
+      </div>
+    `;
+    
     folderTree.appendChild(folderItem);
   });
 }
