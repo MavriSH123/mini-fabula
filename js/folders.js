@@ -221,30 +221,8 @@ function displayFilesInContainer(container, files, folderId) {
 // Показать действия с папкой
 function showFolderActions() {
   const folderActions = document.getElementById('folderActions');
-  console.log('Пытаемся показать действия с папкой');
-  console.log('Элемент folderActions:', folderActions);
-  
   if (folderActions) {
     folderActions.style.display = 'block';
-    folderActions.style.opacity = '1';
-    folderActions.style.visibility = 'visible';
-    console.log('Действия с папкой показаны');
-    
-    // Дополнительная проверка
-    console.log('Стиль display:', folderActions.style.display);
-  } else {
-    console.error('Элемент folderActions не найден!');
-  }
-}
-
-// Принудительно показать действия с папкой
-function forceShowFolderActions() {
-  const folderActions = document.getElementById('folderActions');
-  if (folderActions) {
-    folderActions.style.display = 'block';
-    folderActions.style.opacity = '1';
-    folderActions.style.visibility = 'visible';
-    console.log('Принудительно показаны действия с папкой');
   }
 }
 
@@ -260,8 +238,6 @@ function openCreateFileModal() {
 
 // Выбрать папку
 function selectFolder(folderId, element) {
-  console.log('Выбрана папка:', folderId);
-  
   // Убрать активный класс у всех папок
   document.querySelectorAll('.folder-item').forEach(item => {
     item.classList.remove('active');
@@ -275,10 +251,7 @@ function selectFolder(folderId, element) {
   currentFolderId = folderId;
   
   // Показать действия с папкой
-  setTimeout(() => {
-    showFolderActions();
-    forceShowFolderActions(); // Принудительно показываем
-  }, 100);
+  showFolderActions();
   
   showStatus(`📁 Выбрана папка: ${folderId === 'root' ? 'Все файлы' : 'папка'}`);
   
