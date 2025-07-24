@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <h1>Моя Мини-Fabula</h1>
+  <h1>Мой Мини-Fabula</h1>
   
   <!-- Поле для ввода Client ID -->
   <div class="token-section">
@@ -29,6 +29,12 @@
         <div class="folder-item active" onclick="selectFolder('root', this)" data-id="root">
           📁 Все файлы
         </div>
+      </div>
+      
+      <div id="folderActions" style="margin-top: 15px; display: none;">
+        <h4>Действия с папкой</h4>
+        <button onclick="openCreateFileModal()" style="width: 100%; background-color: #28a745;">📄 Создать файл</button>
+        <button onclick="saveCurrentFileToFolder()" style="width: 100%; background-color: #ffc107; color: #000; margin-top: 5px;">💾 Сохранить текущий файл</button>
       </div>
       
       <h3>Файлы в папке</h3>
@@ -60,6 +66,17 @@
       <br>
       <button onclick="createFolder()" style="background-color: #17a2b8;">Создать</button>
       <button onclick="closeCreateFolderModal()" style="background-color: #6c757d;">Отмена</button>
+    </div>
+  </div>
+
+  <!-- Модальное окно создания файла -->
+  <div id="createFileModal" class="modal">
+    <div class="modal-content">
+      <h3>Создать файл</h3>
+      <input type="text" id="fileName" placeholder="Название файла (без расширения)">
+      <br>
+      <button onclick="createFile()" style="background-color: #28a745;">Создать</button>
+      <button onclick="closeCreateFileModal()" style="background-color: #6c757d;">Отмена</button>
     </div>
   </div>
 
@@ -295,6 +312,10 @@
       }
       
       currentFolderId = folderId;
+      
+      // Показать действия с папкой
+      document.getElementById('folderActions').style.display = 'block';
+      
       showStatus(`📁 Выбрана папка: ${folderId === 'root' ? 'Все файлы' : 'папка'}`);
       
       // Показать файлы в выбранной папке
@@ -354,6 +375,143 @@
       }
     }
 
+    // Открыть модальное окно создания файла
+    function openCreateFileModal() {
+      if (!accessToken) {
+        showStatus("❌ Сначала авторизуйся через Google!");
+        return;
+      }
+      document.getElementById('createFileModal').style.display = 'block';
+      document.getElementById('fileName').focus();
+    }
+
+    // Закрыть модальное окно создания файла
+    function closeCreateFileModal() {
+      document.getElementById('createFileModal').style.display = 'none';
+      document.getElementById('fileName').value = '';
+    }
+
+    // Создать файл в выбранной папке
+    async function createFile() {
+      if (!accessToken) {
+        showStatus("❌ Сначала авторизуйся через Google!");
+        return;
+      }
+
+      const fileName = document.getElementById('fileName').value.trim();
+      if (!fileName) {
+        showStatus("❌ Введите название файла");
+        return;
+      }
+
+      showStatus("⏳ Создание файла...");
+
+      try {
+        // Создаём пустой файл
+        const content = "";
+        const blob = new Blob([content], { type: 'text/plain' });
+        
+        const fullFileName = fileName.endsWith('.txt') ? fileName : `${fileName}.txt`;
+
+        const metadata = {
+          name: fullFileName,
+          mimeType: 'text/plain'
+        };
+
+        // Добавляем в выбранную папку, если это не корневая
+        if (currentFolderId !== 'root') {
+          metadata.parents = [currentFolderId];
+        }
+
+        const form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        form.append('file', blob);
+
+        const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          },
+          body: form
+        });
+
+        if (response.ok) {
+          const fileData = await response.json();
+          showStatus(`✅ Файл "${fullFileName}" создан!`);
+          closeCreateFileModal();
+          
+          // Очищаем редактор и устанавливаем имя файла
+          document.getElementById('editor').value = '';
+          currentFileName = fullFileName;
+          
+          // Обновляем список файлов в папке
+          showFilesInFolder(currentFolderId);
+        } else {
+          const error = await response.json();
+          throw new Error(error.error.message);
+        }
+      } catch (error) {
+        console.error(error);
+        showStatus("❌ Ошибка: " + error.message);
+      }
+    }
+
+    // Сохранить текущий файл в выбранную папку
+    async function saveCurrentFileToFolder() {
+      if (!accessToken) {
+        showStatus("❌ Сначала авторизуйся через Google!");
+        return;
+      }
+
+      const text = document.getElementById('editor').value;
+      const blob = new Blob([text], { type: 'text/plain' });
+
+      showStatus("⏳ Сохранение файла...");
+
+      try {
+        // Генерируем уникальное имя файла с датой
+        const now = new Date();
+        const timestamp = now.toISOString().slice(0, 19).replace(/:/g, '-');
+        const fileName = `fabula_${timestamp}.txt`;
+
+        const metadata = {
+          name: fileName,
+          mimeType: 'text/plain'
+        };
+
+        // Добавляем в выбранную папку, если это не корневая
+        if (currentFolderId !== 'root') {
+          metadata.parents = [currentFolderId];
+        }
+
+        const form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        form.append('file', blob);
+
+        const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          },
+          body: form
+        });
+
+        if (response.ok) {
+          showStatus(`✅ Файл ${fileName} успешно сохранён в папку!`);
+          currentFileName = fileName;
+          
+          // Обновить список файлов в текущей папке
+          showFilesInFolder(currentFolderId);
+        } else {
+          const error = await response.json();
+          throw new Error(error.error.message);
+        }
+      } catch (error) {
+        console.error(error);
+        showStatus("❌ Ошибка: " + error.message);
+      }
+    }
+
     // Сохранить локально
     function saveLocally() {
       const text = document.getElementById('editor').value;
@@ -407,6 +565,8 @@
 
         if (response.ok) {
           showStatus(`✅ Файл ${fileName} успешно сохранён в Google Drive!`);
+          currentFileName = fileName;
+          
           // Обновить список файлов в текущей папке
           showFilesInFolder(currentFolderId);
         } else {
@@ -515,10 +675,17 @@
 
     // Закрытие модального окна при клике вне его
     window.onclick = function(event) {
-      const modal = document.getElementById('createFolderModal');
-      if (event.target == modal) {
-        closeCreateFolderModal();
-      }
+      const modals = ['createFolderModal', 'createFileModal'];
+      modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (event.target == modal) {
+          if (modalId === 'createFolderModal') {
+            closeCreateFolderModal();
+          } else if (modalId === 'createFileModal') {
+            closeCreateFileModal();
+          }
+        }
+      });
     }
 
     // Проверить токен при загрузке страницы
