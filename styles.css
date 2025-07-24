@@ -1,16 +1,17 @@
 /* Основные настройки */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f9f9f9;
+  background: #f8f9fa;
   margin: 0;
   padding: 20px;
-  max-width: 100%;
+  color: #333;
 }
 
 h1 {
-  color: #333;
+  color: #2c3e50;
   text-align: center;
   margin-top: 0;
+  font-size: 2em;
 }
 
 /* Основной контейнер */
@@ -18,16 +19,18 @@ h1 {
   display: flex;
   gap: 20px;
   flex-direction: row;
+  margin-top: 20px;
 }
 
 /* Боковая панель */
 .sidebar {
   flex: 0 0 250px;
-  background: #e8f4f8;
-  border: 1px solid #b8daff;
+  background: #ffffff;
+  border: 1px solid #e1e8ed;
   border-radius: 8px;
   padding: 15px;
   min-height: 70vh;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Основной редактор */
@@ -41,35 +44,83 @@ textarea {
   height: 60vh;
   font-size: 16px;
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid #e1e8ed;
   border-radius: 8px;
   resize: vertical;
   box-sizing: border-box;
+  background: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Кнопки */
 button {
   margin-top: 10px;
   padding: 10px 15px;
   font-size: 14px;
-  background-color: #4CAF50;
+  background-color: #3498db;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-right: 5px;
   margin-bottom: 5px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #2980b9;
+}
+
+/* Специальные кнопки */
+button[style*="background-color: #17a2b8"] {
+  background-color: #17a2b8;
+}
+
+button[style*="background-color: #17a2b8"]:hover {
+  background-color: #138496;
+}
+
+button[style*="background-color: #28a745"] {
+  background-color: #28a745;
+}
+
+button[style*="background-color: #28a745"]:hover {
+  background-color: #218838;
+}
+
+button[style*="background-color: #ffc107"] {
+  background-color: #ffc107;
+  color: #000;
+}
+
+button[style*="background-color: #ffc107"]:hover {
+  background-color: #e0a800;
+}
+
+button[style*="background-color: #dc3545"] {
+  background-color: #dc3545;
+}
+
+button[style*="background-color: #dc3545"]:hover {
+  background-color: #c82333;
+}
+
+button[style*="background-color: #34A853"] {
+  background-color: #34A853;
+}
+
+button[style*="background-color: #34A853"]:hover {
+  background-color: #2d9c4a;
 }
 
 #status {
   margin-top: 10px;
   color: #555;
   font-weight: bold;
+  min-height: 20px;
 }
 
+/* Секция авторизации */
 .token-section {
   background: #fff3cd;
   border: 1px solid #ffeaa7;
@@ -78,44 +129,65 @@ button:hover {
   margin-bottom: 20px;
 }
 
-.folder-item {
+.token-section input {
+  width: 100%;
   padding: 8px;
   margin: 5px 0;
-  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Элементы папок и файлов */
+.folder-item {
+  padding: 10px;
+  margin: 5px 0;
+  background: #f8f9fa;
   border-radius: 5px;
   cursor: pointer;
-  border: 1px solid #ddd;
+  border: 1px solid #e1e8ed;
+  font-size: 14px;
 }
 
 .folder-item:hover {
-  background: #f0f8ff;
+  background: #e3f2fd;
+  border-color: #bbdefb;
 }
 
 .folder-item.active {
-  background: #d1ecf1;
-  border-color: #b8daff;
+  background: #e3f2fd;
+  border-color: #2196f3;
+  font-weight: bold;
 }
 
 .file-item {
   padding: 8px;
   margin: 5px 0;
-  background: white;
+  background: #ffffff;
   border-radius: 5px;
   cursor: pointer;
-  border: 1px solid #ddd;
+  border: 1px solid #e1e8ed;
   font-size: 13px;
 }
 
+.file-item:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+/* Список файлов */
 .file-list {
-  background: #e8f4f8;
-  border: 1px solid #b8daff;
+  background: #ffffff;
+  border: 1px solid #e1e8ed;
   border-radius: 8px;
   padding: 15px;
   margin-top: 20px;
   max-height: 300px;
   overflow-y: auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
+/* Модальные окна */
 .modal {
   display: none;
   position: fixed;
@@ -133,9 +205,10 @@ button:hover {
   padding: 20px;
   border-radius: 8px;
   width: 300px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-input[type="text"] {
+.modal-content input[type="text"] {
   width: 100%;
   padding: 8px;
   margin: 10px 0;
@@ -159,5 +232,8 @@ input[type="text"] {
   button {
     font-size: 12px;
     padding: 8px 10px;
+  }
+  h1 {
+    font-size: 1.5em;
   }
 }
