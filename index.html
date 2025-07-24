@@ -23,22 +23,17 @@
     <!-- Боковая панель с папками -->
     <div class="sidebar">
       <h3>Папки</h3>
-      <button onclick="openCreateFolderModal()" style="width: 100%; background-color: #17a2b8;">📁 Создать папку</button>
+      <button onclick="openCreateFolderModal()" style="width: 100%; background-color: #17a2b8; margin-bottom: 15px;">📁 Создать папку</button>
       
-      <div class="folder-tree" id="folderTree">
-        <div class="folder-item active" onclick="selectFolder('root', this)" data-id="root">
-          📁 Все файлы
-        </div>
-      </div>
+      <!-- Дерево папок -->
+      <div id="folderTree"></div>
       
-      <div id="folderActions" style="margin-top: 15px; display: none;">
+      <!-- Действия с папкой -->
+      <div id="folderActions" style="display: none; margin-top: 15px;">
         <h4>Действия с папкой</h4>
-        <button onclick="openCreateFileModal()" style="width: 100%; background-color: #28a745;">📄 Создать файл</button>
-        <button onclick="saveCurrentFileToFolder()" style="width: 100%; background-color: #ffc107; color: #000; margin-top: 5px;">💾 Сохранить текущий файл</button>
+        <button onclick="openCreateFileModal()" style="width: 100%; background-color: #28a745; margin-bottom: 5px;">📄 Создать файл</button>
+        <button onclick="saveCurrentFileToFolder()" style="width: 100%; background-color: #ffc107; color: #000;">💾 Сохранить текущий файл</button>
       </div>
-      
-      <h3>Файлы в папке</h3>
-      <div id="folderFiles"></div>
     </div>
 
     <!-- Основной редактор -->
@@ -47,7 +42,7 @@
       <br>
       <button onclick="saveLocally()">💾 Сохранить локально</button>
       <button onclick="saveToGoogleDrive()">☁️ Сохранить в Google Drive</button>
-      <button onclick="showCurrentFolderFiles()" style="background-color: #34A853;">📂 Показать файлы</button>
+      <button onclick="listGoogleDriveFiles()" style="background-color: #34A853;">📂 Показать все файлы</button>
       <div id="status"></div>
       
       <!-- Список файлов -->
