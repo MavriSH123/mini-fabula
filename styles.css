@@ -17,7 +17,7 @@ h1 {
 .main-container {
   display: flex;
   gap: 20px;
-  flex-direction: row; /* По умолчанию горизонтальное расположение */
+  flex-direction: row;
 }
 
 /* Боковая панель */
@@ -91,6 +91,21 @@ button:hover {
   background: #f0f8ff;
 }
 
+.folder-item.active {
+  background: #d1ecf1;
+  border-color: #b8daff;
+}
+
+.file-item {
+  padding: 8px;
+  margin: 5px 0;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  font-size: 13px;
+}
+
 .file-list {
   background: #e8f4f8;
   border: 1px solid #b8daff;
@@ -132,7 +147,7 @@ input[type="text"] {
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
   .main-container {
-    flex-direction: column; /* Вертикальное расположение на мобильных */
+    flex-direction: column;
   }
   .sidebar {
     flex: none;
