@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Мой Мини-Fabula</title>
+  <title>Моя Мини-Fabula</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -94,6 +94,7 @@
     <input type="text" id="googleClientId" style="width: 100%; padding: 8px; margin-top: 5px;" placeholder="Client ID от Google Cloud">
     <button onclick="saveClientId()" style="margin-top: 10px;">Сохранить Client ID</button>
     <button onclick="authenticate()" style="margin-top: 10px; background-color: #4285F4;">Авторизоваться через Google</button>
+    <button onclick="clearAuth()" style="margin-top: 10px; background-color: #dc3545;">Очистить авторизацию</button>
   </div>
 
   <textarea id="editor" placeholder="Начни писать свою историю..."></textarea>
@@ -132,6 +133,47 @@
       localStorage.setItem('fabulaText', text);
     }, 10000);
 
+    // Проверка токена из URL и сохранение
+    function checkTokenFromUrl() {
+      const hash = window.location.hash;
+      if (hash) {
+        // Получаем токен из URL после авторизации
+        const params = new URLSearchParams(hash.substring(1));
+        const token = params.get('access_token');
+        const expiresIn = params.get('expires_in'); // время жизни токена (в секундах)
+        
+        if (token) {
+          accessToken = token;
+          // Сохраняем токен и время истечения
+          const expiryTime = Date.now() + (expiresIn ? parseInt(expiresIn) * 1000 : 3600000);
+          localStorage.setItem('googleAccessToken', token);
+          localStorage.setItem('googleTokenExpiry', expiryTime.toString());
+          
+          showStatus("✅ Авторизация успешна! Токен сохранён.");
+          // Очищаем URL от токена
+          window.history.replaceState({}, document.title, "/");
+        }
+      } else {
+        // Проверяем, есть ли сохранённый токен
+        const savedToken = localStorage.getItem('googleAccessToken');
+        const expiry = localStorage.getItem('googleTokenExpiry');
+        
+        if (savedToken && expiry) {
+          const expiryTime = parseInt(expiry);
+          // Проверяем, не истёк ли токен
+          if (Date.now() < expiryTime) {
+            accessToken = savedToken;
+            showStatus("✅ Авторизация восстановлена из сохранённого токена");
+          } else {
+            // Токен истёк
+            localStorage.removeItem('googleAccessToken');
+            localStorage.removeItem('googleTokenExpiry');
+            showStatus("⏰ Токен истёк. Пожалуйста, авторизуйтесь снова");
+          }
+        }
+      }
+    }
+
     // Сохранить Client ID
     function saveClientId() {
       const clientId = document.getElementById('googleClientId').value.trim();
@@ -160,18 +202,12 @@
       window.location = authUrl;
     }
 
-    // Проверка токена из URL
-    function checkTokenFromUrl() {
-      const hash = window.location.hash;
-      if (hash) {
-        const params = new URLSearchParams(hash.substring(1));
-        accessToken = params.get('access_token');
-        if (accessToken) {
-          showStatus("✅ Авторизация успешна!");
-          // Очистить URL от токена
-          window.history.replaceState({}, document.title, "/");
-        }
-      }
+    // Очистить авторизацию
+    function clearAuth() {
+      localStorage.removeItem('googleAccessToken');
+      localStorage.removeItem('googleTokenExpiry');
+      accessToken = '';
+      showStatus("✅ Авторизация очищена");
     }
 
     // Сохранить локально
