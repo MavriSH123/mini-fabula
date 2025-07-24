@@ -1,4 +1,4 @@
-# Mini-Fabula
+# FabulaWriter
 
 Мой текстовый редактор с облачным хранилищем в Google Drive.
 
