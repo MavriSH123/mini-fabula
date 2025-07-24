@@ -39,16 +39,23 @@ async function showFilesInFolder(folderId) {
         fileItem.className = 'file-item';
         fileItem.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div onclick="loadFileFromDrive('${file.id}', '${file.name}')">
+            <div style="flex: 1; cursor: pointer;" onclick="loadFileFromDrive('${file.id}', '${file.name}')">
               <strong>${file.name}</strong><br>
               <small>${new Date(file.modifiedTime).toLocaleString('ru-RU')}</small>
             </div>
-            <button onclick="deleteFile('${file.id}', '${file.name}')" 
-                    style="background-color: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 12px; cursor: pointer;">
+            <button onclick="event.stopPropagation(); deleteFile('${file.id}', '${file.name}')" 
+                    style="background-color: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 12px; cursor: pointer; margin-left: 10px;">
               🗑️
             </button>
           </div>
         `;
+        // Добавим также обработчик для touch устройств
+        fileItem.addEventListener('touchend', function(e) {
+          if (e.target.tagName !== 'BUTTON') {
+            loadFileFromDrive(file.id, file.name);
+          }
+        });
+        
         folderFiles.appendChild(fileItem);
       });
     } else {
