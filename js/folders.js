@@ -221,7 +221,31 @@ function displayFilesInContainer(container, files, folderId) {
 // Показать действия с папкой
 function showFolderActions() {
   const folderActions = document.getElementById('folderActions');
-  folderActions.style.display = 'block';
+  console.log('Пытаемся показать действия с папкой');
+  console.log('Элемент folderActions:', folderActions);
+  
+  if (folderActions) {
+    folderActions.style.display = 'block';
+    folderActions.style.opacity = '1';
+    folderActions.style.visibility = 'visible';
+    console.log('Действия с папкой показаны');
+    
+    // Дополнительная проверка
+    console.log('Стиль display:', folderActions.style.display);
+  } else {
+    console.error('Элемент folderActions не найден!');
+  }
+}
+
+// Принудительно показать действия с папкой
+function forceShowFolderActions() {
+  const folderActions = document.getElementById('folderActions');
+  if (folderActions) {
+    folderActions.style.display = 'block';
+    folderActions.style.opacity = '1';
+    folderActions.style.visibility = 'visible';
+    console.log('Принудительно показаны действия с папкой');
+  }
 }
 
 // Открыть модальное окно создания файла
@@ -251,7 +275,10 @@ function selectFolder(folderId, element) {
   currentFolderId = folderId;
   
   // Показать действия с папкой
-  showFolderActions();
+  setTimeout(() => {
+    showFolderActions();
+    forceShowFolderActions(); // Принудительно показываем
+  }, 100);
   
   showStatus(`📁 Выбрана папка: ${folderId === 'root' ? 'Все файлы' : 'папка'}`);
   
@@ -260,18 +287,5 @@ function selectFolder(folderId, element) {
     expandedFolders.add(folderId);
     displayFolders();
     loadFilesForFolder(folderId);
-  }
-}
-  
-// Показать действия с папкой
-function showFolderActions() {
-  const folderActions = document.getElementById('folderActions');
-  console.log('Показываем действия с папкой:', folderActions);
-  
-  if (folderActions) {
-    folderActions.style.display = 'block';
-    console.log('Действия с папкой показаны');
-  } else {
-    console.error('Элемент folderActions не найден!');
   }
 }
