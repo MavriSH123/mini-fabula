@@ -235,6 +235,7 @@ async function saveToGoogleDrive() {
 async function loadFileFromDrive(fileId, fileName) {
   try {
     showStatus(`⏳ Загрузка файла ${fileName}...`);
+    console.log(`Загрузка файла: ${fileName}, ID: ${fileId}`);
     
     const response = await fetch(
       `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
@@ -245,11 +246,25 @@ async function loadFileFromDrive(fileId, fileName) {
       }
     );
     
+    console.log(`Статус ответа: ${response.status}`);
+    
     if (response.ok) {
       const text = await response.text();
-      document.getElementById('editor').value = text;
+      console.log(`Получен текст длиной: ${text.length} символов`);
+      
+      // Проверяем, существует ли элемент editor
+      const editor = document.getElementById('editor');
+      if (editor) {
+        editor.value = text;
+        console.log('Текст установлен в редактор');
+      } else {
+        console.error('Элемент editor не найден!');
+        throw new Error('Элемент редактора не найден');
+      }
+      
       currentFileName = fileName;
       showStatus(`✅ Файл ${fileName} загружен!`);
+      console.log(`Файл ${fileName} успешно загружен`);
       
       // Скрыть список файлов, если он открыт
       const fileList = document.getElementById('fileList');
@@ -257,10 +272,12 @@ async function loadFileFromDrive(fileId, fileName) {
         fileList.style.display = 'none';
       }
     } else {
-      throw new Error(`Ошибка загрузки файла: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`Ошибка сервера: ${response.status}`, errorText);
+      throw new Error(`Ошибка загрузки файла: ${response.status} - ${errorText}`);
     }
   } catch (error) {
-    console.error(error);
+    console.error('Полная ошибка:', error);
     showStatus("❌ Ошибка загрузки файла: " + error.message);
   }
 }
