@@ -70,9 +70,9 @@ async function createFile() {
   showStatus("⏳ Создание файла...");
 
   try {
-    // Создаём пустой файл
-    const content = "";
-    const blob = new Blob([content], { type: 'text/plain' });
+    // Создаём файл с текущим текстом из редактора
+    const currentText = document.getElementById('editor').value || "";
+    const blob = new Blob([currentText], { type: 'text/plain' });
     
     const fullFileName = fileName.endsWith('.txt') ? fileName : `${fileName}.txt`;
 
@@ -103,8 +103,7 @@ async function createFile() {
       showStatus(`✅ Файл "${fullFileName}" создан!`);
       closeCreateFileModal();
       
-      // Очищаем редактор и устанавливаем имя файла
-      document.getElementById('editor').value = '';
+      // Устанавливаем имя файла
       currentFileName = fullFileName;
       
       // Обновляем список файлов в папке
