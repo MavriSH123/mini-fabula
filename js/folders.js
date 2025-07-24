@@ -233,7 +233,37 @@ function selectFolder(folderId, element) {
   currentFolderId = folderId;
   
   // Показать действия с папкой
-  document.getElementById('folderActions').style.display = 'block';
+function showFolderActions() {
+  const folderActions = document.getElementById('folderActions');
+  folderActions.style.display = 'block';
+}
+
+// Открыть модальное окно создания файла
+function openCreateFileModal() {
+  if (!accessToken) {
+    showStatus("❌ Сначала авторизуйся через Google!");
+    return;
+  }
+
+  document.getElementById('createFileModal').style.display = 'block';
+}
+
+// Выбрать папку (обновлённая версия)
+function selectFolder(folderId, element) {
+  // Убрать активный класс у всех папок
+  document.querySelectorAll('.folder-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  
+  // Добавить активный класс выбранной папке
+  if (element) {
+    element.classList.add('active');
+  }
+  
+  currentFolderId = folderId;
+  
+  // Показать действия с папкой
+  showFolderActions();
   
   showStatus(`📁 Выбрана папка: ${folderId === 'root' ? 'Все файлы' : 'папка'}`);
   
