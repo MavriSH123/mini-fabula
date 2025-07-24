@@ -20,21 +20,17 @@
   </div>
 
   <div class="main-container">
-    <!-- Боковая панель с папками -->
-    <div class="sidebar">
-      <h3>Папки</h3>
-      <button onclick="openCreateFolderModal()" style="width: 100%; background-color: #17a2b8; margin-bottom: 15px;">📁 Создать папку</button>
-      
-      <!-- Дерево папок -->
-      <div id="folderTree"></div>
-      
-      <!-- Действия с папкой -->
-      <div id="folderActions" style="display: none; margin-top: 15px;">
-        <h4>Действия с папкой</h4>
-        <button onclick="openCreateFileModal()" style="width: 100%; background-color: #28a745; margin-bottom: 5px;">📄 Создать файл</button>
-        <button onclick="saveCurrentFileToFolder()" style="width: 100%; background-color: #ffc107; color: #000;">💾 Сохранить текущий файл</button>
-      </div>
-    </div>
+<!-- Боковая панель с папками -->
+<div class="sidebar">
+  <h3>Папки</h3>
+  <button onclick="openCreateFolderModal()">📁 Создать папку</button>
+  
+  <!-- Дерево папок -->
+  <div id="folderTree"></div>
+  
+  <!-- Принудительная кнопка создания файла -->
+  <button onclick="openCreateFileModal()" style="width: 100%; background-color: #28a745; margin-top: 15px;">📄 Создать файл</button>
+</div>
 
     <!-- Основной редактор -->
     <div class="editor-container">
