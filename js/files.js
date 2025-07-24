@@ -245,13 +245,20 @@ async function loadFileFromDrive(fileId, fileName) {
       }
     );
     
-    const text = await response.text();
-    document.getElementById('editor').value = text;
-    currentFileName = fileName;
-    showStatus(`✅ Файл ${fileName} загружен!`);
-    
-    // Скрыть список файлов
-    document.getElementById('fileList').style.display = 'none';
+    if (response.ok) {
+      const text = await response.text();
+      document.getElementById('editor').value = text;
+      currentFileName = fileName;
+      showStatus(`✅ Файл ${fileName} загружен!`);
+      
+      // Скрыть список файлов, если он открыт
+      const fileList = document.getElementById('fileList');
+      if (fileList) {
+        fileList.style.display = 'none';
+      }
+    } else {
+      throw new Error(`Ошибка загрузки файла: ${response.status}`);
+    }
   } catch (error) {
     console.error(error);
     showStatus("❌ Ошибка загрузки файла: " + error.message);
