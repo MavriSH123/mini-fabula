@@ -236,6 +236,8 @@ function openCreateFileModal() {
 
 // Выбрать папку
 function selectFolder(folderId, element) {
+  console.log('Выбрана папка:', folderId);
+  
   // Убрать активный класс у всех папок
   document.querySelectorAll('.folder-item').forEach(item => {
     item.classList.remove('active');
@@ -258,5 +260,18 @@ function selectFolder(folderId, element) {
     expandedFolders.add(folderId);
     displayFolders();
     loadFilesForFolder(folderId);
+  }
+}
+  
+// Показать действия с папкой
+function showFolderActions() {
+  const folderActions = document.getElementById('folderActions');
+  console.log('Показываем действия с папкой:', folderActions);
+  
+  if (folderActions) {
+    folderActions.style.display = 'block';
+    console.log('Действия с папкой показаны');
+  } else {
+    console.error('Элемент folderActions не найден!');
   }
 }
