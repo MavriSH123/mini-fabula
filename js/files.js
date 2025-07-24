@@ -38,10 +38,17 @@ async function showFilesInFolder(folderId) {
         const fileItem = document.createElement('div');
         fileItem.className = 'file-item';
         fileItem.innerHTML = `
-          <strong>${file.name}</strong><br>
-          <small>${new Date(file.modifiedTime).toLocaleString('ru-RU')}</small>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div onclick="loadFileFromDrive('${file.id}', '${file.name}')">
+              <strong>${file.name}</strong><br>
+              <small>${new Date(file.modifiedTime).toLocaleString('ru-RU')}</small>
+            </div>
+            <button onclick="deleteFile('${file.id}', '${file.name}')" 
+                    style="background-color: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 12px; cursor: pointer;">
+              🗑️
+            </button>
+          </div>
         `;
-        fileItem.onclick = () => loadFileFromDrive(file.id, file.name);
         folderFiles.appendChild(fileItem);
       });
     } else {
