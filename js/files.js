@@ -375,3 +375,69 @@ function saveLocally() {
   a.click();
   showStatus("💾 Файл сохранён локально");
 }
+
+// Удалить файл
+async function deleteFile(fileId, fileName) {
+  if (confirm(`Точно удалить файл "${fileName}"?`)) {
+    try {
+      showStatus(`⏳ Удаление файла "${fileName}"...`);
+      
+      const response = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      
+      if (response.ok) {
+        showStatus(`✅ Файл "${fileName}" удалён!`);
+        // Обновить список файлов в текущей папке
+        showFilesInFolder(currentFolderId);
+        // Если это текущий открытый файл - очистить редактор
+        if (currentFileName === fileName) {
+          document.getElementById('editor').value = '';
+          currentFileName = 'fabula_story.txt';
+          currentFileId = null;
+        }
+      } else {
+        const error = await response.json();
+        throw new Error(error.error.message || 'Ошибка удаления файла');
+      }
+    } catch (error) {
+      console.error(error);
+      showStatus("❌ Ошибка удаления: " + error.message);
+    }
+  }
+}
+
+// Удалить папку
+async function deleteFolder(folderId, folderName) {
+  if (confirm(`Точно удалить папку "${folderName}"? Все файлы в ней будут удалены!`)) {
+    try {
+      showStatus(`⏳ Удаление папки "${folderName}"...`);
+      
+      const response = await fetch(`https://www.googleapis.com/drive/v3/files/${folderId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      
+      if (response.ok) {
+        showStatus(`✅ Папка "${folderName}" удалена!`);
+        // Обновить список папок
+        loadFolders();
+        // Если это текущая папка - переключиться на корневую
+        if (currentFolderId === folderId) {
+          selectFolder('root', document.querySelector('.folder-item[data-id="root"]'));
+        }
+      } else {
+        const error = await response.json();
+        throw new Error(error.error.message || 'Ошибка удаления папки');
+      }
+    } catch (error) {
+      console.error(error);
+      showStatus("❌ Ошибка удаления: " + error.message);
+    }
+  }
+}
